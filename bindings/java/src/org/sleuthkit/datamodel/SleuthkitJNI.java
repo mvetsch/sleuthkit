@@ -115,6 +115,10 @@ public class SleuthkitJNI {
 
 	private static native long openVolNat(long vsHandle, long volId) throws TskCoreException;
 
+	private static native String getVolInfoNat(long vsHandle, long volId) throws TskCoreException;
+	
+	private static native long getVolOffsetNat(long vsHandle, long volId) throws TskCoreException;
+
 	private static native long openFsNat(long imgHandle, long fsId) throws TskCoreException;
 
 	private static native long openFileNat(long fsHandle, long fileId, int attrType, int attrId) throws TskCoreException;
@@ -150,6 +154,7 @@ public class SleuthkitJNI {
 	static {
 		LibraryUtils.loadSleuthkitJNI();
 	}
+
 
 	private SleuthkitJNI() {
 
@@ -482,6 +487,14 @@ public class SleuthkitJNI {
 		//returned long is ptr to vs Handle object in tsk
 		return openVolNat(vsHandle, volId);
 	}
+
+	public static String getVolInfo(long vsHandle, long volId) throws TskCoreException { 
+		return getVolInfoNat(vsHandle, volId);
+	}
+	
+	public static long getVolOffset(long vsHandle, long volId) throws TskCoreException { 
+		return getVolOffsetNat(vsHandle, volId);
+	} 
 
 	/**
 	 * Get file system Handle Opened handle is cached (transparently) so it does

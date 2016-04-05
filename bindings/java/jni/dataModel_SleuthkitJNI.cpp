@@ -1257,6 +1257,57 @@ Java_org_sleuthkit_datamodel_SleuthkitJNI_openVolNat(JNIEnv * env,
     return (jlong) vol_part_info;
 }
 
+/*
+ * Open volume with the given id from the given volume system
+ * @return the created TSK_VS_PART_INFO pointer
+ * @param env pointer to java environment this was called from
+ * @param obj the java object this was called from
+ * @param a_vs_info the pointer to the parent vs object
+ * @param vol_id the id of the volume to get
+ */
+JNIEXPORT jstring JNICALL
+Java_org_sleuthkit_datamodel_SleuthkitJNI_getVolInfoNat(JNIEnv * env,
+    jclass obj, jlong a_vs_info, jlong vol_id)
+{
+    TSK_VS_INFO *vs_info = castVsInfo(env, a_vs_info);
+    if (vs_info == 0) {
+        //exception already set
+        return 0;
+    }
+    const TSK_VS_PART_INFO *vol_part_info;
+
+    vol_part_info = tsk_vs_part_get(vs_info, (TSK_PNUM_T) vol_id);
+    if (vol_part_info == NULL) {
+        setThrowTskCoreError(env, tsk_error_get());
+	}
+    char *buf = (char*)malloc(10);
+    strcpy(buf, "1234567890");
+    jstring jstrBuf = env->NewStringUTF(buf);
+
+    return jstrBuf;
+}
+
+
+
+JNIEXPORT jlong JNICALL
+Java_org_sleuthkit_datamodel_SleuthkitJNI_getVolOffsetNat(JNIEnv * env,
+    jclass obj, jlong a_vs_info, jlong vol_id)
+{
+    TSK_VS_INFO *vs_info = castVsInfo(env, a_vs_info);
+    if (vs_info == 0) {
+        //exception already set
+        return 0;
+    }
+    const TSK_VS_PART_INFO *vol_part_info;
+
+    vol_part_info = tsk_vs_part_get(vs_info, (TSK_PNUM_T) vol_id);
+    if (vol_part_info == NULL) {
+        setThrowTskCoreError(env, tsk_error_get());
+	}
+
+    TSK_DADDR_T offset = vol_part_info->start;
+    return offset;
+}
 
 /*
  * Open file system with the given offset
