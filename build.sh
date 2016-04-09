@@ -2,12 +2,11 @@
 
 cd bindings/java
 make
+ant clean
 ant
 
-echo pause
-sleep 10
-echo -
 
+cd -
 ./bootstrap
 ./configure --prefix=/root/tsk --with-libewf=/root/tsk
 make
