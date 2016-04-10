@@ -324,10 +324,13 @@ int
         ||
         attempt_exec
         ("CREATE TABLE reports (report_id INTEGER PRIMARY KEY, path TEXT NOT NULL, crtime INTEGER NOT NULL, src_module_name TEXT NOT NULL, report_name TEXT NOT NULL)",
-            "Error creating reports table: %s\n")) {
+            "Error creating reports table: %s\n")
+        ||
+        attempt_exec
+        ("CREATE TABLE `decryption_provider_information` (`provider` TEXT NOT NULL,`key` TEXT, `ecrypted_loation` TEXT, `device_id` TEXT, `key_type` INTEGER, `volume_id` INTEGER NOT NULL)",
+            "Error creating decryption_provider_information table: %s\n")) {
         return 1;
     }
-
     if (m_blkMapFlag) {
         if (attempt_exec
             ("CREATE TABLE tsk_file_layout (obj_id INTEGER NOT NULL, byte_start INTEGER NOT NULL, byte_len INTEGER NOT NULL, sequence INTEGER NOT NULL, FOREIGN KEY(obj_id) REFERENCES tsk_objects(obj_id));",
