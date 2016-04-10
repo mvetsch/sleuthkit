@@ -107,7 +107,7 @@ public class SleuthkitCase {
 	// understood. Note that the lock is contructed to use a fairness policy.
 	private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock(true);
 
-	public void insertDecryptionInformation(String provider, String key, int type, int dataSource) throws TskCoreException {
+	public void insertDecryptionInformation(String provider, String key, String encryptedLocation, String deviceId, int keyType, int volumeId) throws TskCoreException {
 		CaseDbConnection connection = connections.getConnection();
 		acquireSharedLock();
 		try {
@@ -115,11 +115,13 @@ public class SleuthkitCase {
 			statement.clearParameters();
 			statement.setString(1, provider);
 			statement.setString(2, key);
-			statement.setInt(3,type);
-			statement.setInt(4, dataSource);
+			statement.setString(3, encryptedLocation);
+			statement.setString(4, deviceId);
+			statement.setInt(5, keyType);
+			statement.setInt(6, volumeId);
 			connection.executeUpdate(statement);
 		} catch (SQLException ex) {
-			throw new TskCoreException("Error getting number of blackboard artifacts by content", ex);
+			throw new TskCoreException("Unable to insert decryption provider information", ex);
 		} finally {
 			connection.close();
 			releaseSharedLock();
@@ -209,7 +211,7 @@ public class SleuthkitCase {
 		SELECT_REPORTS("SELECT * FROM reports"), //NON-NLS
 		INSERT_REPORT("INSERT INTO reports (path, crtime, src_module_name, report_name) VALUES (?, ?, ?, ?)"), //NON-NLS
 		DELETE_REPORT("DELETE FROM reports WHERE reports.report_id = ?"), //NON-NLS
-		INSERT_DECRYPTION_INFORMATION("INSERT INTO decryption_provider_information (`provider`, `key`, `type`, `data-source`) VALUES (?, ?, ?, ?)");
+		INSERT_DECRYPTION_INFORMATION("INSERT INTO decryption_provider_information (`provider`, `key`, `ecrypted_loation`,`device_id`, `key_type`, `volume_id`) VALUES (?, ?, ?, ?, ?, ?)");
 
 		private final String sql;
 
